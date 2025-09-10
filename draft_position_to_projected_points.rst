@@ -10,18 +10,33 @@ Fantasy Points Tracker - 2024 Draft
 ====================================
 
 This table shows average points for the following draft brackets in the 2024 draft.
+QBs are excluded from calculations. The first half of the first round is considered a separate bracket,
+because this is where "unkeepables" and high 1st round rookies are drafted. Everything past the first round
+is excluded but results are below.
 
-1.1-1.12
+1.1-1.6, mean=217.65
 
-2.1-2.12
+1.7-1.12, mean=184.52
 
-3.1-3.12
+2.1-2.12, mean=166.56
 
-4.1-4.12
+3.1-3.12, mean=172.44
 
-5.1-5.12
+4.1-4.12, mean=128.88
+
+5.1-5.12, mean=146.02
+
+8.1-8.12, mean=92.05
+
+12.1-12.12, mean=57.41
+
+13.1-13.12, mean=69.79
 
 ****
+
+Power regression
+
+y=236.33608\cdot x^{-0.384194}
 
 Legend:
 -------
@@ -113,3 +128,4 @@ Legend:
      - Seahawks
      - WR
      - 191.2
+

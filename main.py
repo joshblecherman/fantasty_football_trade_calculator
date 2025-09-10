@@ -13,6 +13,7 @@ class Pick:
     round: int
     values: List[int]=[]
 
+
 def get_player(side) -> Player:
     msg_begin = f"[{side}] "
     name = get_valid_input(msg_begin + "player name > ", str)
@@ -22,7 +23,7 @@ def get_player(side) -> Player:
 
 
 def get_pick():
-
+    pass
 
 
 def get_players(side) -> List[Player]:
@@ -52,8 +53,11 @@ def get_valid_input(msg: str, cast_func: callable, accepted_values: Iterable = N
 
 def get_trade_value(side: str):
     assert side in ("sending", "receiving")
-    player_proj_points = get_player(side)
+    players = get_players(side)
+    # picks = get_picks(side) TODO
+    # faab = get_faab(side) TODO
 
 
 if __name__ == "__main__":
     get_trade_value("sending")
+    get_trade_value("receiving")

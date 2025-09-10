@@ -1,13 +1,24 @@
+.. |ss| raw:: html
+
+   <strike>
+
+.. |se| raw:: html
+
+   </strike>
+
 Fantasy Points Tracker - 2024 Draft
 ====================================
 
 This table shows average points for the following draft brackets in the 2024 draft.
 
-1.1-1.6
-1.7-1.12
+1.1-1.12
+
 2.1-2.12
+
 3.1-3.12
+
 4.1-4.12
+
 5.1-5.12
 
 ****
@@ -80,10 +91,10 @@ Legend:
      - 164.4
    * - 1
      - 9
-     - Jalen Hurts
+     - |ss| Jalen Hurts |se|
      - Eagles
      - QB
-     - 320.12
+     - |ss| 320.12 |se|
    * - 1
      - 10
      - Michael Pittman

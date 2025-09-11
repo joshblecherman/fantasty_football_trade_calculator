@@ -34,10 +34,6 @@ is excluded but results are below.
 
 ****
 
-Power regression
-
-y=236.33608\cdot x^{-0.384194}
-
 Legend:
 -------
 - `Rnd`: Draft round.

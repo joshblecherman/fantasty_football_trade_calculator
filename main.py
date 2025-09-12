@@ -8,6 +8,7 @@ class Player:
     name: str
     projected_points: float
     years_kept: int
+    games_remaining: int
 
 
 @dataclass
@@ -21,9 +22,15 @@ class Pick:
 def get_player(side) -> Player:
     msg_begin = f"[{side}] "
     name = get_valid_input(msg_begin + "player name > ", str)
-    projected_points = get_valid_input(msg_begin + f"{name} projected points (remaining in season) > ", float)
+    projected_points = get_valid_input(msg_begin + f"{name} projected points (total) > ", float)
+    games_remaining = get_valid_input(msg_begin + f"{name} remaining games", int, range(0, 18))
     years_kept = get_valid_input(msg_begin + f"{name} years kept (0-4) > ", int, range(0, 5))
-    return Player(name=name, projected_points=projected_points, years_kept=years_kept)
+    return Player(
+        name=name,
+        projected_points=projected_points,
+        years_kept=years_kept,
+        games_remaining=games_remaining
+    )
 
 
 def get_pick(side):
@@ -95,12 +102,14 @@ def get_pick_value(pick: Pick):
 
 def get_player_value(player: Player):
     player_value_base = player.projected_points
+    player_value_current_season = player_value_base * (player.games_remaining / TOTAL_GAMES)
     if player_value_base <= REPLACEMENT_KEEPER_VALUE:
         return player_value_base  # no keeper value above typical replacement, return only current year value
-    player_value = sum([
-        decay_future_value(player_value_base, years_into_future, asset="keeper")
-        for years_into_future in range(player.years_kept + 1)
-    ])
+    player_value = sum(
+        [player_value_current_season] +
+        [decay_future_value(player_value_base, years_into_future, asset="keeper")
+            for years_into_future in range(1, player.years_kept + 1)]
+    )
     return player_value
 
 

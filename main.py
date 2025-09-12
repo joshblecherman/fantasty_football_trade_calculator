@@ -31,7 +31,7 @@ def get_pick(side):
     pick_round = get_valid_input(msg_begin + "round > ", int, range(1, 14))
     if pick_round == 1:
         top_6 = get_valid_input(
-            msg_begin + "assume this round 1 pick will be top 6? (Y/n) > ", chr, ("y", "Y", "n", "N")
+            msg_begin + "assume this round 1 pick will be top 6? (Y/n) > ", str, ("y", "Y", "n", "N")
         )
         if top_6 not in ("y", "Y"):
             # For these purposes, only top 6 pick is "round 1", 7-12 is "round 2"
@@ -42,21 +42,21 @@ def get_pick(side):
 
 def get_players(side) -> List[Player]:
     players = list()
-    done = get_valid_input("done inputting players? (Y/n) > ", chr, ("y", "Y", "n", "N"))
+    done = get_valid_input("done inputting players? (Y/n) > ", str, ("y", "Y", "n", "N"))
     while done not in ("y", "Y"):
         player = get_player(side)
         players.append(player)
-        done = get_valid_input("done inputting players? (Y/n) > ", chr, ("y", "Y", "n", "N"))
+        done = get_valid_input("done inputting players? (Y/n) > ", str, ("y", "Y", "n", "N"))
     return players
 
 
 def get_picks(side) -> List[Pick]:
     picks = list()
-    done = get_valid_input("done inputting picks? (Y/n) > ", chr, ("y", "Y", "n", "N"))
+    done = get_valid_input("done inputting picks? (Y/n) > ", str, ("y", "Y", "n", "N"))
     while done not in ("y", "Y"):
         pick = get_pick(side)
         picks.append(pick)
-        done = get_valid_input("done inputting picks? (Y/n) > ", chr, ("y", "Y", "n", "N"))
+        done = get_valid_input("done inputting picks? (Y/n) > ", str, ("y", "Y", "n", "N"))
     return picks
 
 
@@ -104,11 +104,22 @@ def get_player_value(player: Player):
     return player_value
 
 
+def get_players_value(player_list: List[Player]):
+    return sum([get_player_value(player) for player in player_list])
+
+
+def get_picks_value(pick_list: List[Pick]):
+    return sum([get_pick_value(pick) for pick in pick_list])
+
+
 def get_trade_value(side: str):
     assert side in ("sending", "receiving")
     players = get_players(side)
-    # picks = get_picks(side) TODO
-    # faab = get_faab(side) TODO
+    picks = get_picks(side)
+    players_value = get_players_value(players)
+    picks_value = get_picks_value(picks)
+    print(f"players value is {players_value}")
+    print(f"picks value is {picks_value}")
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ PICK_VALUES = [
 DECAY_FACTOR = 0.9
 
 # Players provide future keeper value only if they provide more
-# value than the replacement keeper
+# value than the average replacement keeper
 REPLACEMENT_KEEPER_VALUE = 210
 
 # Knowing Roger Goodell, this is going up

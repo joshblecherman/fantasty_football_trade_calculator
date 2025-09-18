@@ -4,24 +4,41 @@ from typing import Callable, List
 
 from nicegui import ui
 
+from forms import faab, pick, player
+
 
 @dataclass
-class PendingAsset:
+class AssetSelection:
     player = False
     pick = False
     faab = False
     on_change: Callable
 
-    def pending_player(self):
+    def new_player(self):
         self.player = True
+        self.pick = self.faab = False
         self.on_change()
 
-    def pending_pick(self):
-        self.player = True
+    def new_pick(self):
+        self.pick = True
+        self.faab = self.player = False
         self.on_change()
 
-    def pending_faab(self):
-        self.player = True
+    def new_faab(self):
+        self.faab = True
+        self.player = self.pick = False
+        self.on_change()
+
+    def remove_player(self):
+        self.player = False
+        self.on_change()
+
+    def remove_pick(self):
+        self.pick = False
+        self.on_change()
+
+    def remove_faab(self):
+        self.faab = False
         self.on_change()
 
 
@@ -69,11 +86,14 @@ def enter_trade_ui():
     ui.label('Enter a trade asset.').classes('mx-auto')
     # TODO, generate a form for each of the below 'assets'
     with ui.dropdown_button(text='select asset type', auto_close=True):
-        ui.item(text='player', on_click=pending_asset.pending_player)
+        ui.item(text='faab', on_click=asset_selection.new_faab)
+        ui.item(text='pick', on_click=asset_selection.new_pick)
+        ui.item(text='player', on_click=asset_selection.new_player)
 
-    with ui.row().classes('items-center').bind_visibility(pending_asset, 'player'):
-        ui.input(value=str("Enter a player")).classes('flex-grow')
-        ui.button(icon='delete').props('flat fab-mini color=grey')
+    faab.form(asset_selection)
+    pick.form(asset_selection)
+    player.form(asset_selection)
+
         # ui.item(text='pick', on_click=lambda: trade_assets.add(asset_type=Pick))
         # ui.item(text='player', on_click=lambda: trade_assets.add(asset_type=FAAB))
     # for item in trade_assets.items:
@@ -83,7 +103,7 @@ def enter_trade_ui():
     #             .props('flat fab-mini color=grey')
 
 
-pending_asset = PendingAsset(on_change=enter_trade_ui.refresh)
+asset_selection = AssetSelection(on_change=enter_trade_ui.refresh)
 trade_assets = TradeAssets('Sending', on_change=enter_trade_ui.refresh)
 
 with ui.card().classes('w-80 items-stretch'):

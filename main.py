@@ -4,23 +4,33 @@ from typing import Callable, List, Type
 
 from nicegui import ui
 
-from forms import faab, pick, player
+from app.forms import pick, faab, player
+from app import trade_package
 from schemas import FAAB, Pick, Player, Asset
 
 
 @dataclass
+class TradePackageState:
+    on_change: Callable
+
+    trade_package: List[Asset] = field(default_factory=list)
+
+    def add_asset(self, asset: Asset):
+        self.trade_package.append(asset)
+        self.on_change()
+
+
+@dataclass
 class FormState:
+    on_change: Callable
+
     player = False
     pick = False
     faab = False
 
-    on_change: Callable
-
     player_fields = Player()
     pick_fields = Pick()
     faab_fields = FAAB()
-
-    assets: List[Asset] = field(default_factory=list)
 
     def reset_form(self, asset_type: Type[Asset]):
         if asset_type == Player:
@@ -64,29 +74,32 @@ class FormState:
         self.on_change()
 
     def assets_add_player(self):
-        self.assets.append(self.player_fields)
-        self.reset_form(type(self.player_fields))
+        trade_package_state.add_asset(self.player_fields)
+        # self.reset_form(type(self.player_fields))
         self.on_change()
 
 
 @ui.refreshable
 def enter_trade_ui():
-    ui.label('Enter a trade asset.').classes('mx-auto')
-    with ui.dropdown_button(text='select asset type', auto_close=True):
-        ui.item(text='faab', on_click=form_state.new_faab_form)
-        ui.item(text='pick', on_click=form_state.new_pick_form)
-        ui.item(text='player', on_click=form_state.new_player_form)
+    with ui.card().classes('w-80 items-stretch'):
+        ui.label(text='Trade Package Builder').classes('text-semibold text-2xl')
+        ui.label('Enter a trade asset.').classes('mx-auto')
+        with ui.dropdown_button(text='select asset type', auto_close=True):
+            ui.item(text='faab', on_click=form_state.new_faab_form)
+            ui.item(text='pick', on_click=form_state.new_pick_form)
+            ui.item(text='player', on_click=form_state.new_player_form)
 
-    faab.faab_form(form_state)
-    pick.pick_form(form_state)
-    player.player_form(form_state)
+        faab.faab_form(form_state)
+        pick.pick_form(form_state)
+        player.player_form(form_state)
+
+    trade_package.trade_package(trade_package_state)
 
 
 form_state = FormState(on_change=enter_trade_ui.refresh)
+trade_package_state = TradePackageState(on_change=enter_trade_ui.refresh)
 
-with ui.card().classes('w-80 items-stretch'):
-    ui.label(text='Trade Package Builder').classes('text-semibold text-2xl')
-    enter_trade_ui()
+enter_trade_ui()
 
 if __name__ in {'__main__', '__mp_main__'}:
     ui.run()

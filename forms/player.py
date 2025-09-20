@@ -2,24 +2,29 @@ from nicegui import ui
 
 
 @ui.refreshable
-def player_form(asset_selection):
-    with ui.row().classes('flex-center').bind_visibility(asset_selection, 'player') as row:
-        with ui.column().classes('items-start gap-4'):  # main vertical layout
-            ui.button(icon='delete', on_click=asset_selection.cancel_player) \
-                .props('flat fab-mini color=grey')
+def player_form(form_state):
+    with ui.column().classes('items-stretch gap-4').bind_visibility(form_state, 'player') as row:
+        ui.button(icon='delete', on_click=form_state.cancel_player_form) \
+            .props('flat fab-mini color=grey')
 
-            # Player name input
-            ui.input(value="Enter a player") \
-                .bind_value_to(asset_selection.player_fields, 'name')
+        # Player name input
+        ui.input(label="Player Name") \
+            .bind_value_to(form_state.player_fields, 'name')
 
-            # Projected points
-            ui.number(label='Projected Points', precision=1).props('clearable') \
-                .bind_value_to(asset_selection.player_fields, 'projected_points')
+        # Projected points
+        ui.number(label='Projected Points', precision=1).props('clearable') \
+            .bind_value_to(form_state.player_fields, 'projected_points')
 
-            # Years kept
-            with ui.row().classes('items-center gap-2'):
-                ui.label(text='Years kept')
-                ui.radio([0, 1, 2, 3, 4]).props('inline') \
-                    .bind_value_to(asset_selection.player_fields, 'years_kept')
+        # Games Remaining
+        ui.number(label='Games Remaining', precision=0).props('clearable') \
+            .bind_value_to(form_state.player_fields, 'games_remaining')
+
+        # Years kept
+        with ui.row().classes('items-center gap-2'):
+            ui.label(text='Years kept')
+            ui.radio([0, 1, 2, 3, 4]).props('inline') \
+                .bind_value_to(form_state.player_fields, 'years_kept')
+
+        ui.button(text='Submit', on_click=form_state.assets_add_player)
 
     return row

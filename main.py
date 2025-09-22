@@ -28,54 +28,35 @@ class FormState:
     pick = False
     faab = False
 
-    player_fields = Player()
-    pick_fields = Pick()
-    faab_fields = FAAB()
-
-    def reset_form(self, asset_type: Type[Asset]):
-        if asset_type == Player:
-            self.player = False
-            self.player_fields = Player()
-        if asset_type == Pick:
-            self.pick = False
-            self.pick_fields = Pick()
-        if asset_type == FAAB:
-            self.faab = False
-            self.faab_fields = FAAB()
-
     def new_player_form(self):
         self.player = True
-        self.reset_form(Pick)
-        self.reset_form(FAAB)
+        self.pick = self.faab = False
         self.on_change()
 
     def new_pick_form(self):
         self.pick = True
-        self.reset_form(Player)
-        self.reset_form(FAAB)
+        self.player = self.faab = False
         self.on_change()
 
     def new_faab_form(self):
         self.faab = True
-        self.reset_form(Pick)
-        self.reset_form(Player)
+        self.pick = self.player = False
         self.on_change()
 
     def cancel_player_form(self):
-        self.reset_form(Player)
+        self.player = False
         self.on_change()
 
     def cancel_pick_form(self):
-        self.reset_form(Pick)
+        self.pick = False
         self.on_change()
 
     def cancel_faab_form(self):
-        self.reset_form(FAAB)
+        self.faab = False
         self.on_change()
 
-    def assets_add_player(self):
-        trade_package_state.add_asset(self.player_fields)
-        # self.reset_form(type(self.player_fields))
+    def submit(self, asset: Asset):
+        trade_package_state.add_asset(asset)
         self.on_change()
 
 
@@ -89,8 +70,8 @@ def enter_trade_ui():
             ui.item(text='pick', on_click=form_state.new_pick_form)
             ui.item(text='player', on_click=form_state.new_player_form)
 
-        faab.faab_form(form_state)
-        pick.pick_form(form_state)
+        # faab.faab_form(form_state)
+        # pick.pick_form(form_state)
         player.player_form(form_state)
 
     trade_package.trade_package(trade_package_state)

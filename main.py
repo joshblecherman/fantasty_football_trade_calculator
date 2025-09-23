@@ -62,23 +62,27 @@ class FormState:
 
 @ui.refreshable
 def enter_trade_ui():
-    with ui.card().classes('w-80 items-stretch'):
-        ui.label(text='Trade Package Builder').classes('text-semibold text-2xl')
-        ui.label('Enter a trade asset.').classes('mx-auto')
-        with ui.dropdown_button(text='select asset type', auto_close=True):
-            ui.item(text='faab', on_click=form_state.new_faab_form)
-            ui.item(text='pick', on_click=form_state.new_pick_form)
-            ui.item(text='player', on_click=form_state.new_player_form)
+    with ui.splitter().classes('full-width items-stretch') as splitter:
+        with splitter.before:
+            with ui.dropdown_button(text='select asset type', auto_close=True):
+                ui.item(text='faab', on_click=form_state.new_faab_form)
+                ui.item(text='pick', on_click=form_state.new_pick_form)
+                ui.item(text='player', on_click=form_state.new_player_form)
 
-        # faab.faab_form(form_state)
-        # pick.pick_form(form_state)
-        player.player_form(form_state)
+            # faab.faab_form(form_state)
+            # pick.pick_form(form_state)
+            player.player_form(form_state)
 
-    trade_package.trade_package(trade_package_state)
+        with splitter.after:
+            with ui.card().classes('items-stretch'):
+                trade_package.trade_package(trade_package_state)
 
 
 form_state = FormState(on_change=enter_trade_ui.refresh)
 trade_package_state = TradePackageState(on_change=enter_trade_ui.refresh)
+
+with ui.header():
+    ui.label('Trade Tool')
 
 enter_trade_ui()
 

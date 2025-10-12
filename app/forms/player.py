@@ -6,7 +6,13 @@ from schemas import Player
 def player_form(form_state):
     player = Player()
 
-    with ui.column().classes('items-stretch gap-4').bind_visibility(form_state, 'player') as row:
+    # Years kept
+    with ui.row().classes('items-center gap-2').bind_visibility(form_state, 'player'):
+        ui.label(text='Trade Side')
+        ui.radio(['A', 'B']).props('inline') \
+            .bind_value_to(player, 'side')
+
+    with ui.column().classes('items-stretch gap-4').bind_visibility(player, 'side') as row:
         ui.button(icon='delete', on_click=form_state.cancel_player_form) \
             .props('flat fab-mini color=grey')
 

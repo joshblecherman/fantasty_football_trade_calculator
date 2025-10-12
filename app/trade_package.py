@@ -11,7 +11,7 @@ def trade_package(trade_package_state):
 
     tree = ui.tree(tree_nodes, label_key='id')
     tree.add_slot('default-body', '''
-        <span :props="props">"{{ props.node.description }}"</span>
+        <span :props="props">{{ props.node.description }}</span>
     ''')
     return tree
 

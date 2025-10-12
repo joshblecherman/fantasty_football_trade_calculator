@@ -2,7 +2,13 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Player:
+class TradeAsset:
+    # either 'A' or 'B'
+    side: str = None
+
+
+@dataclass
+class Player(TradeAsset):
     name: str = None
     projected_points: float = None
     years_kept: int = None
@@ -10,7 +16,7 @@ class Player:
 
 
 @dataclass
-class Pick:
+class Pick(TradeAsset):
     # round == 1 is picks 1-6, round == 2 is picks 7-12
     # from there, count increases with each round
     round: int = None
@@ -18,7 +24,7 @@ class Pick:
 
 
 @dataclass
-class FAAB:
+class FAAB(TradeAsset):
     pass
 
 

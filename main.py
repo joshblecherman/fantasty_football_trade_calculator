@@ -55,8 +55,17 @@ class FormState:
         self.faab = False
         self.on_change()
 
+    def reset(self):
+        self.player = False
+        self.pick = False
+        self.faab = False
+
     def submit(self, asset: Asset):
-        trade_package_state.add_asset(asset)
+        if asset.side == 'A':
+            trade_package_state_A.add_asset(asset)
+        elif asset.side == 'B':
+            trade_package_state_B.add_asset(asset)
+        self.reset()
         self.on_change()
 
 
@@ -74,12 +83,20 @@ def enter_trade_ui():
             player.player_form(form_state)
 
         with splitter.after:
-            with ui.card().classes('items-stretch'):
-                trade_package.trade_package(trade_package_state)
+            with ui.splitter(horizontal=True).classes('full-width items-stretch') as splitter_trades:
+                with splitter_trades.before:
+                    with ui.card().classes('full-width items-stretch'):
+                        ui.label('Package A')
+                        trade_package.trade_package(trade_package_state_A)
+                with splitter_trades.after:
+                    with ui.card().classes('full-width items-stretch'):
+                        ui.label('Package B')
+                        trade_package.trade_package(trade_package_state_B)
 
 
 form_state = FormState(on_change=enter_trade_ui.refresh)
-trade_package_state = TradePackageState(on_change=enter_trade_ui.refresh)
+trade_package_state_A = TradePackageState(on_change=enter_trade_ui.refresh)
+trade_package_state_B = TradePackageState(on_change=enter_trade_ui.refresh)
 
 with ui.header():
     ui.label('Trade Tool')

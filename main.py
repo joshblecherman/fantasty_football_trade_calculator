@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 from dataclasses import dataclass, field
-from typing import Callable, List, Type
+from typing import Callable, List
 
 from nicegui import ui
 
-from app.forms import pick, faab, player
+from app.forms import player
 from app import trade_package
-from schemas import FAAB, Pick, Player, Asset
+from schemas import Asset
+
+from trade_valuation import get_asset_value
 
 
 @dataclass
@@ -17,7 +19,13 @@ class TradePackageState:
 
     def add_asset(self, asset: Asset):
         self.trade_package.append(asset)
+        self.calculate()
         self.on_change()
+
+    def calculate(self):
+        total_value = 0
+        for asset in self.trade_package:
+            asset.value = get_asset_value(asset)
 
 
 @dataclass
@@ -71,27 +79,38 @@ class FormState:
 
 @ui.refreshable
 def enter_trade_ui():
-    with ui.splitter().classes('full-width items-stretch') as splitter:
+    with ui.splitter(horizontal=True).classes('full-width items-stretch') as splitter:
         with splitter.before:
-            with ui.dropdown_button(text='select asset type', auto_close=True):
-                ui.item(text='faab', on_click=form_state.new_faab_form)
-                ui.item(text='pick', on_click=form_state.new_pick_form)
-                ui.item(text='player', on_click=form_state.new_player_form)
+            with ui.splitter().classes('full-width items-stretch') as splitter_form_trades:
+                with splitter_form_trades.before:
+                    with ui.dropdown_button(text='select asset type', auto_close=True):
+                        ui.item(text='faab', on_click=form_state.new_faab_form)
+                        ui.item(text='pick', on_click=form_state.new_pick_form)
+                        ui.item(text='player', on_click=form_state.new_player_form)
 
-            # faab.faab_form(form_state)
-            # pick.pick_form(form_state)
-            player.player_form(form_state)
+                    # faab.faab_form(form_state)
+                    # pick.pick_form(form_state)
+                    player.player_form(form_state)
+
+                with splitter_form_trades.after:
+                    with ui.splitter(horizontal=True).classes('full-width items-stretch') as splitter_trades:
+                        with splitter_trades.before:
+                            with ui.card().classes('full-width items-stretch'):
+                                ui.label('Package A')
+                                trade_package.trade_package(trade_package_state_A)
+                        with splitter_trades.after:
+                            with ui.card().classes('full-width items-stretch'):
+                                ui.label('Package B')
+                                trade_package.trade_package(trade_package_state_B)
 
         with splitter.after:
-            with ui.splitter(horizontal=True).classes('full-width items-stretch') as splitter_trades:
-                with splitter_trades.before:
-                    with ui.card().classes('full-width items-stretch'):
-                        ui.label('Package A')
-                        trade_package.trade_package(trade_package_state_A)
-                with splitter_trades.after:
-                    with ui.card().classes('full-width items-stretch'):
-                        ui.label('Package B')
-                        trade_package.trade_package(trade_package_state_B)
+            ui.label('Package A Values')
+            for asset in trade_package_state_A.trade_package:
+                ui.label(str(asset.value))
+
+            ui.label('Package B Values')
+            for asset in trade_package_state_B.trade_package:
+                ui.label(str(asset.value))
 
 
 form_state = FormState(on_change=enter_trade_ui.refresh)

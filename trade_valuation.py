@@ -17,11 +17,11 @@ def decay_future_value(value, years_into_future, asset: str):
     )
 
 
-def get_pick_value(pick: Pick):
+def get_pick_value(pick: Pick) -> float:
     return decay_future_value(PICK_VALUES[pick.round], 1, asset="pick")
 
 
-def get_player_value(player: Player):
+def get_player_value(player: Player) -> float:
     player_value_base = player.projected_points
     player_value_current_season = player_value_base * (player.games_remaining / TOTAL_GAMES)
     if player_value_base <= REPLACEMENT_KEEPER_VALUE:
@@ -34,9 +34,22 @@ def get_player_value(player: Player):
     return player_value
 
 
+def get_faab_value(faab: FAAB) -> float:
+    pass
+
+
 def get_players_value(player_list: List[Player]):
     return sum([get_player_value(player) for player in player_list])
 
 
 def get_picks_value(pick_list: List[Pick]):
     return sum([get_pick_value(pick) for pick in pick_list])
+
+
+def get_asset_value(asset: Asset) -> float:
+    if isinstance(asset, FAAB):
+        return get_faab_value(asset)
+    elif isinstance(asset, Player):
+        return get_player_value(asset)
+    elif isinstance(asset, Pick):
+        return get_pick_value(asset)

@@ -20,10 +20,10 @@ class TradePackageState:
     def add_asset(self, asset: Asset):
         self.trade_package.append(asset)
         self.calculate()
+        self.trade_package.sort(key=lambda a: a.value)  # TODO: more efficient way that sorting after every insert?
         self.on_change()
 
     def calculate(self):
-        total_value = 0
         for asset in self.trade_package:
             asset.value = get_asset_value(asset)
 
@@ -104,13 +104,20 @@ def enter_trade_ui():
                                 trade_package.trade_package(trade_package_state_B)
 
         with splitter.after:
-            ui.label('Package A Values')
-            for asset in trade_package_state_A.trade_package:
-                ui.label(str(asset.value))
+            trade_package_a_values = [a.value for a in trade_package_state_A.trade_package]
+            trade_package_b_values = [a.value for a in trade_package_state_B.trade_package]
+            names = [repr(a) for a in trade_package_state_A.trade_package] + \
+                    [repr(b) for b in trade_package_state_B.trade_package]
 
-            ui.label('Package B Values')
-            for asset in trade_package_state_B.trade_package:
-                ui.label(str(asset.value))
+            ui.echart({
+                'xAxis': {'type': 'value'},
+                'yAxis': {'type': 'category', 'data': names},
+                'series': [
+                    {'type': 'bar', 'name': 'package A', 'data': trade_package_a_values},
+                    {'type': 'bar', 'name': 'package B', 'data': trade_package_b_values}
+                ],
+                'legend': {}
+            })
 
 
 form_state = FormState(on_change=enter_trade_ui.refresh)

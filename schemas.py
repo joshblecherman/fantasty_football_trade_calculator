@@ -4,8 +4,7 @@ from abc import ABC
 
 @dataclass
 class Asset(ABC):
-    # either 'A' or 'B'
-    side: str = None
+    side: str = None  # either 'A' or 'B' when set
     value: float = None
 
 
@@ -16,6 +15,9 @@ class Player(Asset):
     years_kept: int = None
     games_remaining: int = None
 
+    def __repr__(self):
+        return self.name
+
 
 @dataclass
 class Pick(Asset):
@@ -24,7 +26,13 @@ class Pick(Asset):
     round: int = None
     pick: int = None
 
+    def __repr__(self):
+        return f"{self.round}.{self.pick}"
+
 
 @dataclass
 class FAAB(Asset):
     pass
+
+    def __repr__(self):
+        return "TODO"

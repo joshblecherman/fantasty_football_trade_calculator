@@ -104,24 +104,23 @@ def enter_trade_ui():
                                 trade_package.trade_package(trade_package_state_B)
 
         with splitter.after:
-            trade_package_values_a = [
-                {'value': a.value, 'itemStyle': {'color': '#356f65'}} for a in trade_package_state_A.trade_package
-            ]
-            trade_package_values_b = [
-                {'value': a.value, 'itemStyle': {'color': '#6e80ff'}} for a in trade_package_state_B.trade_package
-            ]
-            trade_package_values = trade_package_values_a + trade_package_values_b
-
-            trade_package_names = [repr(a) for a in trade_package_state_A.trade_package] + \
-                                  [repr(b) for b in trade_package_state_B.trade_package]
-
             ui.echart({
                 'xAxis': {'type': 'value'},
-                'yAxis': {'type': 'category', 'data': trade_package_names},
+                'yAxis': {'type': 'category', 'data': ['A']},
                 'series': [
-                    {'type': 'bar', 'data': trade_package_values}
+                    {'type': 'bar', 'stack': 'A', 'colorBy': 'series', 'data': [asset.value]}
+                    for asset in trade_package_state_A.trade_package
                 ],
-                'legend': {}
+                'legend': {},
+            })
+            ui.echart({
+                'xAxis': {'type': 'value'},
+                'yAxis': {'type': 'category', 'data': ['B']},
+                'series': [
+                    {'type': 'bar', 'stack': 'A', 'colorBy': 'series', 'data': [asset.value]}
+                    for asset in trade_package_state_B.trade_package
+                ],
+                'legend': {},
             })
 
 
